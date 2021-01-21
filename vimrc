@@ -15,3 +15,4 @@ let &t_te.="\e[0 q"
 " gg=G to indent
 set autoindent
 colorscheme evening
+set tabstop=4
