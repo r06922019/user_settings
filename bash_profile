@@ -10,3 +10,39 @@ alias du_sh_hidden="du -sh .[^.]*" # calculates sum of hidden files, or du -hs $
 export JAVA_HOME=/usr/local/opt/openjdk 
 # after 
 # brew tap homebrew/cask-versions && brew tap homebrew/cask && brew install java
+
+# this depends on the encoding but 
+# https://alvinalexander.com/blog/post/linux-unix/how-remove-non-printable-ascii-characters-file-unix/
+alias trim-garbage="tr -cd '\11\12\15\40-\176'"
+
+tmux_run_in_detached() {
+  set -x
+  case "$#" in
+    "2" )
+      tmux new-session -d -s "$1" "$2"
+      ;;
+    "1" )
+      tmux new-session -d -s "test" "$1"
+      ;;
+    *)
+      echo "QQ"
+      ;;
+  esac
+  set +x
+}
+repo-sync() {
+  set -x
+  if [[ $(git status --porcelain=v1 2>/dev/null | wc -l) -eq 0 ]]; then
+    case "$#" in
+      "1" )
+        repo sync || (git remote update && git fetch origin && git reset --hard origin/${1})
+        ;;
+      *)
+        repo sync || (git remote update && git fetch origin && git reset --hard origin/main)
+        ;;
+    esac
+  else
+    echo "Unstaged changes"
+  fi
+  set +x
+}
